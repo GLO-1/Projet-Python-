@@ -73,4 +73,14 @@ class Quoridor:
             self.liste_murs = copy.deepcopy(murs)
         elif murs is None:
             self.liste_murs = {'horizontaux': [], 'verticaux': []}
-            
+             if isiterable(joueurs):
+            if len(joueurs) > 2:
+                raise QuoridorError("l'itérable de joueurs en contient plus de deux.")
+            if type(joueurs[0]) is str:
+                self.liste_joueurs = [{'nom': joueurs[0], 'murs': 10, 'pos': (5, 1)}, {'nom': joueurs[1], 'murs': 10, 'pos': (5, 9)}]
+
+            elif type(joueurs[0]) is dict:
+                self.liste_joueurs = [copy.deepcopy(joueurs[0]), copy.deepcopy(joueurs[1])]
+
+                if joueurs[0]['pos'][0] < 1 or joueurs[0]['pos'][0] > 9 or joueurs[0]['pos'][1] < 1 or joueurs[0]['pos'][1] > 9 or joueurs[1]['pos'][0] < 1 or joueurs[1]['pos'][0] > 9 or joueurs[1]['pos'][1] < 1 or joueurs[1]['pos'][1] > 9:
+                    raise QuoridorError("la position d'un joueur est invalide.")
