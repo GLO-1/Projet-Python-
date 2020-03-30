@@ -84,3 +84,26 @@ class Quoridor:
 
                 if joueurs[0]['pos'][0] < 1 or joueurs[0]['pos'][0] > 9 or joueurs[0]['pos'][1] < 1 or joueurs[0]['pos'][1] > 9 or joueurs[1]['pos'][0] < 1 or joueurs[1]['pos'][0] > 9 or joueurs[1]['pos'][1] < 1 or joueurs[1]['pos'][1] > 9:
                     raise QuoridorError("la position d'un joueur est invalide.")
+
+                if joueurs[0]['murs'] > 10 or joueurs[0]['murs'] < 0 or joueurs[1]['murs'] > 10 or joueurs[1]['murs'] < 0:
+                    raise QuoridorError("le nombre de murs qu'un joueur peut placer est > 10, ou négatif.")
+        else:
+            raise QuoridorError("joueurs n'est pas un itérable.")
+
+        if len(self.liste_murs['horizontaux']) + len(self.liste_murs['verticaux']) + self.liste_joueurs[0]['murs'] + self.liste_joueurs[1]['murs'] != 20:
+            raise QuoridorError("le total des murs placés et plaçables n'est pas égal à 20.")
+
+def __str__(self):
+    tab = []
+    for i in range(9):
+        tab += [[' . ', ' '] * 8 + [' . ']]
+        if i != 8:
+            tab += [['   ', ' '] * 8 + ['   ']]
+
+    tab[(9 - self.liste_joueurs[0]["pos"][1]) *2][(self.liste_joueurs[0]["pos"][0]-1) * 2] = ' 1 '
+    tab[(9-self.liste_joueurs[1]["pos"][1]) *2][(self.liste_joueurs[1]["pos"][0]-1) * 2] = ' 2 '
+
+    for i in self.liste_murs["verticaux"]:
+        tab[(9 - i[1]) * 2][(i[0] - 1) * 2 - 1] = '|'
+        tab[(9 - i[1]) * 2 - 1][(i[0] - 1) * 2 - 1] = '|'
+        tab[(9 - i[1] - 1) * 2][(i[0] - 1) * 2 - 1] = '|'
