@@ -173,3 +173,61 @@ def jouer_coup(self, joueur):
                 if i not in self.liste_murs["verticaux"] or [i[0], i[1]-1] not in self.liste_murs["verticaux"]:
                     self.placer_mur(joueur, tuple(i), 'vertical')
                     break
+
+    def état_partie(self):
+        # murs a tirer de la methode placer_mur
+        état = {'joueurs': [
+            {'nom': self.liste_joueurs[0]['nom'], 'murs': self.liste_joueurs[0]['murs'],
+                'pos': self.liste_joueurs[0]['pos']},
+            {'nom': self.liste_joueurs[1]['nom'], 'murs': self.liste_joueurs[1]['murs'],
+                'pos': self.liste_joueurs[1]['pos']},
+        ],
+            'murs': {
+                'horizontaux': self.liste_murs['horizontaux'],
+            'vertcaux': self.liste_murs['verticaux'],
+        }
+        }
+        return état
+
+    def partie_terminée(self):
+        """
+        Déterminer si la partie est terminée.
+        :returns: le nom du gagnant si la partie est terminée; False autrement.
+        """
+        terminée = False
+
+        if self.état_partie()['joueurs'][0]['pos'][1] == 9:
+            terminée = self.état_partie()["joueurs"][0]["nom"]
+        elif self.état_partie()['joueurs'][1]['pos'][1] == 1:
+            terminée = self.état_partie()["joueurs"][1]["nom"]
+        return terminée
+
+
+    def placer_mur(self, joueur: int, position: tuple, orientation: str):
+        if joueur != 1 and joueur != 2:
+            raise QuoridorError('le numéro du joueur est autre que 1 ou 2.')
+        if self.liste_joueurs[joueur-1]['murs'] > 0:
+            if orientation == 'horizontal':
+                for mur in self.liste_murs['horizontaux']:
+                    if position == mur or (position[0] == (mur[0]+1) and position[1] == mur[1]):
+                        raise QuoridorError('un mur occupe déjà cette position.')
+                    if mur[0] > 8 or mur[0] < 1 or mur[1] < 2 or mur[1] > 9:
+                        raise QuoridorError('la position est invalide pour cette orientation.')
+                for mur in self.liste_murs['verticaux']:
+                    if position[0] == mur[0]-1 and position[1] == mur[1]+1:
+                        raise QuoridorError('un mur occupe déjà cette position.')
+                self.liste_murs['horizontaux'].append(position)
+                self.liste_joueurs[joueur-1]['murs'] -= 1
+            if orientation == 'vertical':
+                for mur in self.liste_murs['verticaux']:
+                    if position == mur or (position[1] == (mur[1]+1) and position[0] == mur[0]):
+                        raise QuoridorError('un mur occupe déjà cette position.')
+                    if mur[0] > 9 or mur[0] < 2 or mur[1] < 1 or mur[1] > 8:
+                        raise QuoridorError('la position est invalide pour cette orientation.')
+                for mur in self.liste_murs['horizontaux']:
+                    if position[0] == mur[0]+1 and position[1] == mur[1]-1:
+                        raise QuoridorError('un mur occupe déjà cette position.')
+                self.liste_murs['verticaux'].append(position)
+                self.liste_joueurs[joueur-1]['murs'] -= 1
+        else:
+            raise QuoridorError('Le joueur a déjà placé tous ses murs.')
