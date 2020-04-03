@@ -107,3 +107,39 @@ def __str__(self):
         tab[(9 - i[1]) * 2][(i[0] - 1) * 2 - 1] = '|'
         tab[(9 - i[1]) * 2 - 1][(i[0] - 1) * 2 - 1] = '|'
         tab[(9 - i[1] - 1) * 2][(i[0] - 1) * 2 - 1] = '|'
+
+    for i in self.liste_murs["horizontaux"]:
+        tab[(9 - i[1]) * 2 + 1][(i[0] - 1) * 2] = '---'
+        tab[(9 - i[1]) * 2 + 1][(i[0] - 1) * 2 + 1] = '-'
+        tab[(9 - i[1]) * 2 + 1][(i[0]) * 2] = '---'
+
+    damier = f'Légende: 1={self.liste_joueurs[0]["nom"]}, 2={self.liste_joueurs[1]["nom"]}\n'
+    damier += '   ' + '-' * 35 + '\n'
+    debut2 = '  |'
+    ligneF = '--|' + '-' * 35 + '\n  | 1   2   3   4   5   6   7   8   9'
+
+    for i in range(9):
+        debut1 = f'{9 - i} |'
+        ligne1 = debut1 + ''.join(tab[2 * i]) + '|\n'
+        if i != 8:
+            ligne2 = debut2 + ''.join(tab[2 * i + 1]) + '|\n'
+        else:
+            ligne2 = ''
+        damier += ligne1 + ligne2
+
+    damier += ligneF
+    return damier
+
+    def déplacer_jeton(self, joueur, position):
+        if joueur != 2 and joueur != 1:
+            raise QuoridorError("le numéro du joueur est autre que 1 ou 2.")
+        if position[0] > 9 or position[0] < 1 or position[1] > 9 or position[1] < 1:
+            raise QuoridorError("la position est invalide (en dehors du damier).")
+
+        graphe = construire_graphe([joueur['pos'] for joueur in self.liste_joueurs],self.liste_murs['horizontaux'], self.liste_murs['verticaux'])
+
+        if position in graphe.successors(self.liste_joueurs[joueur-1]['pos']):
+            self.liste_joueurs[joueur-1]['pos'] = position
+
+        else:
+            raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
