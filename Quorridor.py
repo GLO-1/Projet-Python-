@@ -247,3 +247,11 @@ def isiterable(p_object):
         return True
     except TypeError:
         return False
+    
+    
+    if __name__ == "__main__":
+    jeu = Quoridor(['nvir', 'jnfein'])
+    while True:
+        jeu.jouer_coup(1)
+        jeu.jouer_coup(2)
+        print(jeu)
