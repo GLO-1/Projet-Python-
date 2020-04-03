@@ -143,3 +143,33 @@ def __str__(self):
 
         else:
             raise QuoridorError("la position est invalide pour l'état actuel du jeu.")
+
+def jouer_coup(self, joueur):
+    if joueur != 2 and joueur != 1:
+        raise QuoridorError("le numéro du joueur est autre que 1 ou 2.")
+
+    if self.partie_terminée() is not False:
+        raise QuoridorError("la partie est déjà terminée.")
+
+    graphe = construire_graphe([joueur['pos'] for joueur in self.liste_joueurs],
+                                self.liste_murs['horizontaux'], self.liste_murs['verticaux'])
+    coups = nx.shortest_path(
+        graphe, self.liste_joueurs[joueur - 1]['pos'], 'B' + str(joueur))
+    coupsAdver = nx.shortest_path(
+        graphe, self.liste_joueurs[2 - joueur]['pos'], 'B' + str(3 - joueur))
+
+    if len(coups) <= len(coupsAdver) or self.liste_joueurs[joueur-1]['murs'] < 1:
+        self.déplacer_jeton(joueur, coups[1])
+        
+    else:
+        if coupsAdver[0][0]-coupsAdver[1][0] == 0:
+            for i in graphe.successors(coupsAdver[0]):
+                if i not in self.liste_murs["horizontaux"] or [i[0]-1, i[1]] not in self.liste_murs["horizontaux"]:
+                    self.placer_mur(joueur, tuple(i), 'horizontal')
+                    break
+
+        else:
+            for i in graphe.successors(coupsAdver[0]):
+                if i not in self.liste_murs["verticaux"] or [i[0], i[1]-1] not in self.liste_murs["verticaux"]:
+                    self.placer_mur(joueur, tuple(i), 'vertical')
+                    break
