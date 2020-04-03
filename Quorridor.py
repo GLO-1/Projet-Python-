@@ -231,3 +231,19 @@ def jouer_coup(self, joueur):
                 self.liste_joueurs[joueur-1]['murs'] -= 1
         else:
             raise QuoridorError('Le joueur a déjà placé tous ses murs.')
+
+class QuoridorError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return str(self.message)
+
+
+def isiterable(p_object):
+    '''Permet de vérifier si un objet est itérable'''
+    try:
+        it = iter(p_object)
+        return True
+    except TypeError:
+        return False
